@@ -21,4 +21,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "Fleet Tracker Test"
 include(":app")
- 
+include(":core:data")
+include(":core:domain")
+include(":core:ui")
+include(":core:utils")
+include(":feature:maps")
