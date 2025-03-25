@@ -22,6 +22,7 @@ material = "1.12.0"
 retrofit = "2.11.0"
 okhttp = "4.12.0"
 serialization = "1.6.3"
+runtime = "1.0.0-alpha03"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -57,6 +58,7 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+androidx-runtime = { group = "androidx.xr.runtime", name = "runtime", version.ref = "runtime" }
 
 
 [plugins]

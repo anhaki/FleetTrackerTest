@@ -28,7 +28,6 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun MapsScreen(
-    innerPadding: PaddingValues,
     viewModel: MapsViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -91,7 +90,7 @@ fun MapsScreen(
                 title = "Kendaraan Saya",
                 icon = bitmapDescriptor(
                     context, R.drawable.ic_car
-                )
+                ),
             )
         }
     }

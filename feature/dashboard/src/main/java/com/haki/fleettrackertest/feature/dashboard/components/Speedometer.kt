@@ -1,0 +1,65 @@
+package com.haki.fleettrackertest.feature.dashboard.components
+
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
+@Composable
+fun Speedometer(
+    modifier: Modifier = Modifier,
+    currentSpeed: Int,
+    maxSpeed: Int,
+) {
+    val sweepAngle = 180f
+    val startAngle = 180f
+    val speedRatio = currentSpeed.toFloat() / maxSpeed
+    val width = 240.dp
+    val primaryColor = MaterialTheme.colorScheme.primary
+
+    Column(
+        modifier = modifier,
+        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+    ) {
+        Text(
+            modifier = Modifier.padding(bottom = 20.dp),
+            text = "Current speed",
+            fontSize = 34.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Canvas(modifier = Modifier.size(width, width/3)) {
+            drawArc(
+                color = Color.LightGray,
+                startAngle = startAngle,
+                sweepAngle = sweepAngle,
+                useCenter = false,
+                size = Size(size.width, size.width),
+                style = Stroke(width = 20.dp.toPx(), cap = StrokeCap.Round)
+            )
+            drawArc(
+                color = primaryColor,
+                startAngle = startAngle,
+                sweepAngle = sweepAngle * speedRatio,
+                useCenter = false,
+                size = Size(size.width, size.width),
+                style = Stroke(width = 20.dp.toPx(), cap = StrokeCap.Round)
+            )
+        }
+        Text(
+            text = "$currentSpeed",
+            fontSize = 64.sp,
+            fontWeight = FontWeight.Normal
+        )
+    }
+}
