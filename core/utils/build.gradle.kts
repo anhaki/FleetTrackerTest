@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.haki.fleettrackertest.core.utils"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
@@ -40,4 +40,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(libs.play.services.maps)
+
 }

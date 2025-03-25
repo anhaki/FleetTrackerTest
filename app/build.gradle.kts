@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -8,16 +10,20 @@ plugins {
 
 android {
     namespace = "com.haki.fleettrackertest"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.haki.fleettrackertest"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        buildConfigField("String", "MAPS_API_KEY", "\"${properties.getProperty("MAPS_API_KEY")}\"")
+        buildConfigField("String", "MAPS_API_BASE_URL", "\"${properties.getProperty("MAPS_API_BASE_URL")}\"")
     }
 
     buildTypes {
@@ -38,10 +44,14 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
 dependencies {
+    implementation(project(":feature:maps"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:data"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -68,4 +78,8 @@ dependencies {
     kapt (libs.androidx.room.compiler)
     implementation(libs.converter.gson)
 
+    implementation (libs.retrofit)
+    implementation (libs.retrofit.converter.gson)
+    implementation (libs.okhttp.logging.interceptor)
+    implementation (libs.serialization.json)
 }

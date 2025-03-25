@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.haki.fleettrackertest.core.ui"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
