@@ -52,6 +52,7 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
     implementation(project(":core:navigation"))
+    implementation(project(":core:utils"))
 
     implementation(project(":feature:maps"))
     implementation(project(":feature:dashboard"))
