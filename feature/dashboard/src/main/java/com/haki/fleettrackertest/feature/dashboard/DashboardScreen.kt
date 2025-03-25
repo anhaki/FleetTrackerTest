@@ -46,8 +46,8 @@ fun DashboardScreen(
                     .background(MaterialTheme.colorScheme.background)
                     .padding(34.dp)
                     .fillMaxWidth(),
-                currentSpeed = 38,
-                maxSpeed = 120,
+                currentSpeed = 85,
+                maxSpeed = 100,
             )
         }
         StatusSection(engineState, doorState)

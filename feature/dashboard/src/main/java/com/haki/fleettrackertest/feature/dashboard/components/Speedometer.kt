@@ -2,6 +2,8 @@ package com.haki.fleettrackertest.feature.dashboard.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +29,7 @@ fun Speedometer(
     val speedRatio = currentSpeed.toFloat() / maxSpeed
     val width = 240.dp
     val primaryColor = MaterialTheme.colorScheme.primary
+    val dangerColor = MaterialTheme.colorScheme.error
 
     Column(
         modifier = modifier,
@@ -48,7 +51,7 @@ fun Speedometer(
                 style = Stroke(width = 20.dp.toPx(), cap = StrokeCap.Round)
             )
             drawArc(
-                color = primaryColor,
+                color = if(currentSpeed < 80) primaryColor else dangerColor,
                 startAngle = startAngle,
                 sweepAngle = sweepAngle * speedRatio,
                 useCenter = false,
@@ -61,5 +64,16 @@ fun Speedometer(
             fontSize = 64.sp,
             fontWeight = FontWeight.Normal
         )
+        Row{
+            Text(
+                text = "0",
+                fontSize = 24.sp,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = "$maxSpeed",
+                fontSize = 24.sp,
+            )
+        }
     }
 }
