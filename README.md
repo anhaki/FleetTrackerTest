@@ -18,15 +18,14 @@ Mini Fleet Tracker adalah aplikasi Android yang mensimulasikan sistem manajemen 
 
 1. Clone repository ini:
    ```sh
-   git clone https://github.com/your-repo-url
+   git clone [https://github.com/your-repo-url](https://github.com/anhaki/FleetTrackerTest)
    ```
 2. Buka proyek di Android Studio.
 3. Tambahkan kunci API Google Maps di `local.properties`:
    ```properties
    MAPS_API_KEY=AIzaSyALzdQOtH50TNc_90iVDOtAGYpIRiY7qw4
-   MAPS_API_BASE_URL=https://maps.googleapis.com/maps/api/
    ```
-4. Jalankan aplikasi di emulator atau perangkat nyata.
+4. Jalankan aplikasi di emulator atau perangkat.
 
 ## 🔑 Kredensial Login
 
@@ -48,15 +47,8 @@ _Gambar tampilan dashboard sensor_
 - **Jetpack Components** - LiveData, ViewModel, Room
 - **Google Maps SDK** - Menampilkan peta dan kendaraan
 - **Coroutines** - Untuk menangani operasi asinkron
-- **Retrofit/Moshi** - Untuk pengolahan data jika diperlukan
 
 ## 🛠 Arsitektur
 
-Aplikasi ini dibangun dengan pendekatan **MVVM** agar mudah diperluas dan dipelihara.
-
-## 📜 Lisensi
-
-MIT License. Lihat file [LICENSE](LICENSE) untuk informasi lebih lanjut.
-
-🚀 Selamat Coding! 🎉
+Aplikasi ini dibangun dengan pendekatan **Clean Architecture** agar mudah diperluas dan dipelihara.
 
