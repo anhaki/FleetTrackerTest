@@ -41,7 +41,6 @@ fun MapsScreen(
 ) {
     val context = LocalContext.current
     val vehicleState by viewModel.vehicleState.collectAsState()
-    val isMapLoaded by viewModel.isMapLoaded.collectAsState()
     val cameraPositionState = rememberCameraPositionState()
     val markerState = rememberMarkerState(position = vehicleState.currentPosition ?: LatLng(0.0, 0.0))
 
@@ -85,36 +84,31 @@ fun MapsScreen(
         GoogleMap(
             modifier = Modifier.padding(innerPadding).fillMaxSize(),
             cameraPositionState = cameraPositionState,
-            onMapLoaded = {
-                viewModel.updateIsMapLoaded(true)
-            }
         ) {
-            if (isMapLoaded) {
-                if (vehicleState.fullPath.size > 1) {
-                    Polyline(
-                        points = vehicleState.fullPath,
-                        color = Color.Gray,
-                        width = 8f
-                    )
-                }
+            if (vehicleState.fullPath.size > 1) {
+                Polyline(
+                    points = vehicleState.fullPath,
+                    color = Color.Gray,
+                    width = 8f
+                )
+            }
 
-                if (vehicleState.traveledPath.size > 1) {
-                    Polyline(
-                        points = vehicleState.traveledPath,
-                        color = Color.Blue,
-                        width = 8f
-                    )
-                }
+            if (vehicleState.traveledPath.size > 1) {
+                Polyline(
+                    points = vehicleState.traveledPath,
+                    color = Color.Blue,
+                    width = 8f
+                )
+            }
 
-                vehicleState.currentPosition?.let {
-                    Marker(
-                        state = markerState,
-                        title = "Kendaraan Saya",
-                        icon = bitmapDescriptor(
-                            context, R.drawable.ic_car
-                        ),
-                    )
-                }
+            vehicleState.currentPosition?.let {
+                Marker(
+                    state = markerState,
+                    title = "Kendaraan Saya",
+                    icon = bitmapDescriptor(
+                        context, R.drawable.ic_car
+                    ),
+                )
             }
         }
     }

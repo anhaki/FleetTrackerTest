@@ -24,9 +24,6 @@ class MapsViewModel @Inject constructor(
     private val _vehicleState = MutableStateFlow(VehicleState())
     val vehicleState: StateFlow<VehicleState> = _vehicleState.asStateFlow()
 
-    private val _isMapLoaded = MutableStateFlow(false)
-    val isMapLoaded: StateFlow<Boolean> = _isMapLoaded.asStateFlow()
-
     private var fullRoute = emptyList<LatLng>()
 
     init {
@@ -42,10 +39,6 @@ class MapsViewModel @Inject constructor(
             delay(2000)
             startVehicleSimulation()
         }
-    }
-
-    fun updateIsMapLoaded(newisMapLoaded: Boolean){
-        _isMapLoaded.value = newisMapLoaded
     }
 
     private fun startVehicleSimulation() {
