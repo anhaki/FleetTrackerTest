@@ -15,16 +15,16 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val alarmChannel = NotificationChannel(
+            val notificationChannel = NotificationChannel(
                 CHANNEL_ID,
                 CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_HIGH
+                NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             }
             val notificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(alarmChannel)
+            notificationManager.createNotificationChannel(notificationChannel)
         }
     }
 }

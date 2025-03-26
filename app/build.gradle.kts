@@ -57,6 +57,7 @@ dependencies {
     implementation(project(":feature:maps"))
     implementation(project(":feature:dashboard"))
     implementation(project(":feature:common"))
+    implementation(project(":feature:login"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

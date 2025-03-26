@@ -63,4 +63,11 @@ dependencies {
     implementation (libs.serialization.json)
 
     implementation(libs.play.services.maps)
+
+    implementation(libs.androidx.datastore.preferences)
+
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    annotationProcessor(libs.room.compiler)
+    kapt(libs.room.compiler)
 }

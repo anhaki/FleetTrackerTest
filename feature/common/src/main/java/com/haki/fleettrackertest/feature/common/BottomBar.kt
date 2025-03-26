@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -24,7 +25,7 @@ import com.haki.fleettrackertest.core.navigation.Screen
 @Composable
 fun BottomBar(
     modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController(),
+    navController: NavController = rememberNavController(),
 ) {
 
     NavigationBar(
@@ -65,12 +66,14 @@ fun BottomBar(
                     unselectedTextColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 onClick = {
-                    navController.navigate(item.screen.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+                    if (currentRoute != item.screen.route) {
+                        navController.navigate(item.screen.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            restoreState = true
+                            launchSingleTop = true
                         }
-                        restoreState = true
-                        launchSingleTop = true
                     }
                 }
             )

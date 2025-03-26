@@ -23,11 +23,15 @@ class MapsViewModel @Inject constructor(
 
     private val _vehicleState = MutableStateFlow(VehicleState())
     val vehicleState: StateFlow<VehicleState> = _vehicleState.asStateFlow()
+
+    private val _isMapLoaded = MutableStateFlow(false)
+    val isMapLoaded: StateFlow<Boolean> = _isMapLoaded.asStateFlow()
+
     private var fullRoute = emptyList<LatLng>()
 
     init {
         viewModelScope.launch {
-            getFullRouteUseCase.invoke().collectLatest {
+            getFullRouteUseCase().collectLatest {
                 fullRoute = it
             }
 
@@ -40,9 +44,13 @@ class MapsViewModel @Inject constructor(
         }
     }
 
+    fun updateIsMapLoaded(newisMapLoaded: Boolean){
+        _isMapLoaded.value = newisMapLoaded
+    }
+
     private fun startVehicleSimulation() {
         viewModelScope.launch {
-            getVehicleMovementUseCase.invoke(fullRoute){position ->
+            getVehicleMovementUseCase(fullRoute){position ->
                 updateVehiclePosition(position)
             }
         }

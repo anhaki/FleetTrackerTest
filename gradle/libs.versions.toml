@@ -24,6 +24,8 @@ okhttp = "4.12.0"
 serialization = "1.6.3"
 runtime = "1.0.0-alpha03"
 
+room-db = "2.6.1"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
@@ -49,6 +51,9 @@ retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-
 okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
 
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room-db" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room-db" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room-db" }
 
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }

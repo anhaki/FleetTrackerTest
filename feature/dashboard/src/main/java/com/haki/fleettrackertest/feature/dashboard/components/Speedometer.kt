@@ -1,5 +1,9 @@
 package com.haki.fleettrackertest.feature.dashboard.components
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -31,9 +37,21 @@ fun Speedometer(
     val primaryColor = MaterialTheme.colorScheme.primary
     val dangerColor = MaterialTheme.colorScheme.error
 
+    val animatedSpeedRatio by animateFloatAsState(
+        targetValue = currentSpeed.toFloat() / maxSpeed,
+        animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing),
+        label = "Speedometer Animation"
+    )
+
+    val animatedSpeed by animateIntAsState(
+        targetValue = currentSpeed,
+        animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing),
+        label = "Speed Text Animation"
+    )
+
     Column(
         modifier = modifier,
-        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             modifier = Modifier.padding(bottom = 20.dp),
@@ -51,19 +69,28 @@ fun Speedometer(
                 style = Stroke(width = 20.dp.toPx(), cap = StrokeCap.Round)
             )
             drawArc(
-                color = if(currentSpeed < 80) primaryColor else dangerColor,
+                color = if (currentSpeed < 80) primaryColor else dangerColor,
                 startAngle = startAngle,
-                sweepAngle = sweepAngle * speedRatio,
+                sweepAngle = sweepAngle * animatedSpeedRatio,
                 useCenter = false,
                 size = Size(size.width, size.width),
                 style = Stroke(width = 20.dp.toPx(), cap = StrokeCap.Round)
             )
         }
-        Text(
-            text = "$currentSpeed",
-            fontSize = 64.sp,
-            fontWeight = FontWeight.Normal
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "$currentSpeed",
+                fontSize = 64.sp,
+                fontWeight = FontWeight.Normal
+            )
+            Text(
+                text = "km/h",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Normal
+            )
+        }
         Row{
             Text(
                 text = "0",
