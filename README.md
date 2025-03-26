@@ -34,12 +34,12 @@ Untuk masuk ke aplikasi, gunakan akun berikut:
 - **Password**: `pass123`
 
 ## 📸 Screenshot
+![WhatsApp Image 2025-03-26 at 23 58 59](https://github.com/user-attachments/assets/5f85a0d5-f004-4fd8-9985-068c4ee7e843)
+![WhatsApp Image 2025-03-26 at 23 59 01 (1)](https://github.com/user-attachments/assets/5aeab615-a524-44a1-af3d-2acc7c677514)
+![WhatsApp Image 2025-03-26 at 23 59 01](https://github.com/user-attachments/assets/04375c4c-7340-40ec-83d3-c0d60cfb6d32)
+![WhatsApp Image 2025-03-26 at 23 59 00](https://github.com/user-attachments/assets/569217e7-c5ee-41a0-a60b-59ec9d81e691)
 
-![Tampilan Peta](https://via.placeholder.com/600x300)  
-_Gambar tampilan peta aplikasi_
 
-![Dashboard Sensor](https://via.placeholder.com/600x300)  
-_Gambar tampilan dashboard sensor_
 
 ## 📚 Teknologi yang Digunakan
 
