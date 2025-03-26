@@ -44,7 +44,8 @@ Untuk masuk ke aplikasi, gunakan akun berikut:
 ## 📚 Teknologi yang Digunakan
 
 - **Kotlin** - Bahasa utama pengembangan aplikasi
-- **Jetpack Components** - LiveData, ViewModel, Room
+- **Jetpack Components** - Flow, ViewModel, Room
+- **Compose** - Sebagai UI utama yang deklaratif
 - **Google Maps SDK** - Menampilkan peta dan kendaraan
 - **Coroutines** - Untuk menangani operasi asinkron
 
