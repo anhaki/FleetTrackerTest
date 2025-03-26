@@ -21,6 +21,17 @@ class DashboardViewmodel @Inject constructor(
     private val _speedState = MutableStateFlow(0)
     val speedState: StateFlow<Int> = _speedState.asStateFlow()
 
+    private val _warningMessage = MutableStateFlow("")
+    val warningMessage: StateFlow<String> = _warningMessage
+
+    fun showWarning(message: String) {
+        _warningMessage.value = message
+    }
+
+    fun dismissWarning() {
+        _warningMessage.value = ""
+    }
+
     private val _engineState = MutableStateFlow(Status(
         icon = R.drawable.ic_gear,
         name = "Engine",

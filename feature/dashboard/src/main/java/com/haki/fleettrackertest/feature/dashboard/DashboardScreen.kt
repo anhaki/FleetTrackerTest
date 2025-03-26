@@ -21,6 +21,9 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +31,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -51,6 +55,7 @@ import com.haki.fleettrackertest.feature.common.TopBar
 import com.haki.fleettrackertest.feature.dashboard.components.DisabledPermissionBanner
 import com.haki.fleettrackertest.feature.dashboard.components.Speedometer
 import com.haki.fleettrackertest.feature.dashboard.components.StatusItem
+import kotlinx.coroutines.launch
 
 @Composable
 fun DashboardScreen(
@@ -73,6 +78,27 @@ fun DashboardScreen(
                 ) == PackageManager.PERMISSION_GRANTED
             } else true
         )
+    }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+    val warningMessage by viewModel.warningMessage.collectAsState()
+
+    LaunchedEffect(speedState, engineState, doorState) {
+        when {
+            speedState > 80 -> viewModel.showWarning("⚠️ High Speed Detected!")
+            speedState > 0 && !doorState.status -> viewModel.showWarning("⚠️ Door Open While Moving!")
+            engineState.status -> viewModel.showWarning("🔧 Engine Started")
+            !engineState.status -> viewModel.showWarning("🛑 Engine Stopped")
+            else -> viewModel.dismissWarning()
+        }
+    }
+
+    LaunchedEffect(warningMessage) {
+        if (warningMessage.isNotEmpty()) {
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar(warningMessage, duration = SnackbarDuration.Short)
+            }
+        }
     }
     DisposableEffect(Unit) {
         val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
@@ -108,6 +134,7 @@ fun DashboardScreen(
 
     if(isUserLoggedIn && !isCheckingSession){
         Scaffold(
+            snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
             modifier = Modifier,
             bottomBar = {
                 BottomBar(navController = navController)
