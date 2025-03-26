@@ -1,18 +1,18 @@
-# 🚗 Mini Fleet Tracker
+# 🚗 Fleet Tracker
 
-Selamat datang di **Mini Fleet Tracker**! 🚀 Aplikasi ini mensimulasikan pelacakan kendaraan dengan data sensor IoT secara real-time.
+Selamat datang di **Fleet Tracker**! 🚀 Aplikasi ini mensimulasikan pelacakan kendaraan dengan data simulasi sensor IoT secara real-time.
 
 ## 📜 Deskripsi
 
-Mini Fleet Tracker adalah aplikasi Android yang mensimulasikan sistem manajemen armada kendaraan. Aplikasi ini menampilkan lokasi kendaraan di peta serta berbagai data sensor seperti kecepatan, status mesin, dan status pintu.
+Fleet Tracker adalah aplikasi Android yang mensimulasikan sistem manajemen armada kendaraan. Aplikasi ini menampilkan lokasi kendaraan di peta serta berbagai data sensor seperti kecepatan, status mesin, dan status pintu.
 
 ## ✨ Fitur Utama
 
-✅ **Live Vehicle Map View**: Menampilkan lokasi kendaraan pada peta secara real-time.
+✅ **Vehicle Map View**: Menampilkan lokasi kendaraan pada peta.
 ✅ **Simulasi Data IoT**: Status mesin, status pintu, dan kecepatan kendaraan.
 ✅ **Dashboard Real-Time**: Informasi kendaraan ditampilkan dengan pembaruan berkala.
 ✅ **Peringatan Otomatis**: Notifikasi jika kecepatan melebihi batas atau pintu terbuka saat kendaraan bergerak.
-✅ **Dukungan Arsitektur Bersih**: Menggunakan MVVM untuk pemisahan logika bisnis dan UI.
+✅ **Clean Architecture**: Menggunakan MVVM untuk pemisahan logika bisnis dan UI.
 
 ## 🔧 Instalasi dan Konfigurasi
 
