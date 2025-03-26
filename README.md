@@ -10,7 +10,7 @@ Fleet Tracker adalah aplikasi Android yang mensimulasikan sistem manajemen armad
 
 1. Clone repository ini:
    ```sh
-   git clone [https://github.com/your-repo-url](https://github.com/anhaki/FleetTrackerTest)
+   git clone https://github.com/anhaki/FleetTrackerTest
    ```
 2. Buka proyek di Android Studio.
 3. Tambahkan API key Google Maps di `local.properties`:
