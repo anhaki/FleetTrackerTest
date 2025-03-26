@@ -6,14 +6,6 @@ Selamat datang di **Fleet Tracker**! 🚀 Aplikasi ini mensimulasikan pelacakan 
 
 Fleet Tracker adalah aplikasi Android yang mensimulasikan sistem manajemen armada kendaraan. Aplikasi ini menampilkan lokasi kendaraan di peta serta berbagai data sensor seperti kecepatan, status mesin, dan status pintu.
 
-## ✨ Fitur Utama
-
-✅ **Vehicle Map View**: Menampilkan lokasi kendaraan pada peta.
-✅ **Simulasi Data IoT**: Status mesin, status pintu, dan kecepatan kendaraan.
-✅ **Dashboard Real-Time**: Informasi kendaraan ditampilkan dengan pembaruan berkala.
-✅ **Peringatan Otomatis**: Notifikasi jika kecepatan melebihi batas atau pintu terbuka saat kendaraan bergerak.
-✅ **Clean Architecture**: Menggunakan MVVM untuk pemisahan logika bisnis dan UI.
-
 ## 🔧 Instalasi dan Konfigurasi
 
 1. Clone repository ini:
@@ -26,6 +18,14 @@ Fleet Tracker adalah aplikasi Android yang mensimulasikan sistem manajemen armad
    MAPS_API_KEY=AIzaSyALzdQOtH50TNc_90iVDOtAGYpIRiY7qw4
    ```
 4. Jalankan aplikasi di emulator atau perangkat.
+
+## ✨ Fitur Utama
+
+✅ **Vehicle Map View**: Menampilkan lokasi kendaraan pada peta.
+✅ **Simulasi Data IoT**: Status mesin, status pintu, dan kecepatan kendaraan.
+✅ **Dashboard Real-Time**: Informasi kendaraan ditampilkan dengan pembaruan berkala.
+✅ **Peringatan Otomatis**: Notifikasi jika kecepatan melebihi batas atau pintu terbuka saat kendaraan bergerak.
+✅ **Clean Architecture**: Menggunakan MVVM untuk pemisahan logika bisnis dan UI.
 
 ## 🔑 Kredensial Login
 
