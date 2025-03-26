@@ -21,7 +21,7 @@ Mini Fleet Tracker adalah aplikasi Android yang mensimulasikan sistem manajemen 
    git clone [https://github.com/your-repo-url](https://github.com/anhaki/FleetTrackerTest)
    ```
 2. Buka proyek di Android Studio.
-3. Tambahkan kunci API Google Maps di `local.properties`:
+3. Tambahkan API key Google Maps di `local.properties`:
    ```properties
    MAPS_API_KEY=AIzaSyALzdQOtH50TNc_90iVDOtAGYpIRiY7qw4
    ```
