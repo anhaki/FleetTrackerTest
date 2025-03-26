@@ -50,6 +50,22 @@ class DashboardViewmodel @Inject constructor(
         initialStatus()
     }
 
+    fun updateEngineStatus(newStatus: Boolean){
+        _engineState.value = _engineState.value.copy(
+            status = newStatus
+        )
+    }
+
+    fun updateDoorStatus(newStatus: Boolean){
+        _doorState.value = _doorState.value.copy(
+            status = newStatus
+        )
+    }
+
+    fun updateSpeed(newSpeed: Int) {
+        _speedState.value = newSpeed
+    }
+
     private fun initialStatus(){
         viewModelScope.launch {
                 getLastStatusLogUseCase().collectLatest {

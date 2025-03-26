@@ -1,7 +1,16 @@
 package com.haki.fleettrackertest.feature.dashboard
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.background
@@ -13,9 +22,13 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -25,14 +38,17 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.haki.fleettrackertest.core.navigation.Screen
 import com.haki.fleettrackertest.core.service.FleetStatusSourceService
+import com.haki.fleettrackertest.core.utils.ServiceFlag
 import com.haki.fleettrackertest.core.utils.Status
 import com.haki.fleettrackertest.core.utils.StatusActions
 import com.haki.fleettrackertest.feature.common.BottomBar
 import com.haki.fleettrackertest.feature.common.TopBar
+import com.haki.fleettrackertest.feature.dashboard.components.DisabledPermissionBanner
 import com.haki.fleettrackertest.feature.dashboard.components.Speedometer
 import com.haki.fleettrackertest.feature.dashboard.components.StatusItem
 
@@ -47,6 +63,40 @@ fun DashboardScreen(
     val doorState by viewModel.doorState.collectAsState()
     val isUserLoggedIn by viewModel.isUserLoggedIn.collectAsState()
     val isCheckingSession by viewModel.isCheckingSession.collectAsState()
+    val isServiceRunning = remember { mutableStateOf(ServiceFlag.IS_SERVICE_RUNNING) }
+    var hasNotificationPermission by remember {
+        mutableStateOf(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            } else true
+        )
+    }
+    DisposableEffect(Unit) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                hasNotificationPermission =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.POST_NOTIFICATIONS
+                        ) == PackageManager.PERMISSION_GRANTED
+                    } else true
+            }
+        }
+        val lifecycle = (context as androidx.lifecycle.LifecycleOwner).lifecycle
+        lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycle.removeObserver(observer)
+        }
+    }
+    val permissionRequest =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) { result ->
+            hasNotificationPermission = result
+        }
 
     LaunchedEffect(isUserLoggedIn) {
         if (!isUserLoggedIn) {
@@ -55,6 +105,7 @@ fun DashboardScreen(
             }
         }
     }
+
     if(isUserLoggedIn && !isCheckingSession){
         Scaffold(
             modifier = Modifier,
@@ -63,27 +114,41 @@ fun DashboardScreen(
             },
             topBar = {
                 TopBar(
-                    title = stringResource(com.haki.fleettrackertest.feature.common.R.string.dashboard)
+                    title = stringResource(com.haki.fleettrackertest.feature.common.R.string.dashboard),
+                    action = {
+                        navController.navigate(Screen.Log.route)
+                    }
                 )
             },
             floatingActionButton = {
                 Button(
                     onClick = {
-                        val subscribeIntent = Intent(context, FleetStatusSourceService::class.java).also {
-                            it.action = StatusActions.SUBSCRIBE.toString()
+                        val serviceIntent = if(!isServiceRunning.value) {
+                            isServiceRunning.value = true
+                            Intent(context, FleetStatusSourceService::class.java).also {
+                                it.action = StatusActions.SUBSCRIBE.toString()
+                            }
+                        } else {
+                            isServiceRunning.value = false
+                            viewModel.updateEngineStatus(false)
+                            viewModel.updateDoorStatus(false)
+                            viewModel.updateSpeed(0)
+                            Intent(context, FleetStatusSourceService::class.java).also {
+                                it.action = StatusActions.UNSUBSCRIBE.toString()
+                            }
                         }
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            context.startForegroundService(subscribeIntent)
+                            context.startForegroundService(serviceIntent)
                         } else{
-                            context.startService(subscribeIntent)
+                            context.startService(serviceIntent)
                         }
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
+                        containerColor = if(!isServiceRunning.value) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
                         contentColor = MaterialTheme.colorScheme.onPrimary
                     )
                 ) {
-                    Text("Start sensor")
+                    if(!isServiceRunning.value) Text("Start sensor") else Text("Stop sensor")
                 }
             },
             floatingActionButtonPosition = FabPosition.Center
@@ -91,6 +156,35 @@ fun DashboardScreen(
             Column(
                 modifier = Modifier.padding(innerPadding)
             ){
+                AnimatedVisibility(
+                    visible = !hasNotificationPermission,
+                    exit = shrinkVertically(
+                        animationSpec = tween(durationMillis = 800)
+                    ),
+                ) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        LaunchedEffect(Unit) {
+                            permissionRequest.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                    }
+                    DisabledPermissionBanner(
+                        icon = ImageVector.vectorResource(R.drawable.ic_bell_slash),
+                        title = "Notification is disabled",
+                        description = "Enable for alerts function correctly",
+                        actionText = "Settings",
+                    ) {
+                        val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                                putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                            }
+                        } else {
+                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                data = Uri.parse("package:${context.packageName}")
+                            }
+                        }
+                        context.startActivity(intent)
+                    }
+                }
                 Box{
                     Spacer(
                         modifier = Modifier

@@ -2,6 +2,7 @@ package com.haki.fleettrackertest.core.data.source
 
 import com.google.android.gms.maps.model.LatLng
 import com.haki.fleettrackertest.core.data.source.local.LocalDataSource
+import com.haki.fleettrackertest.core.data.source.local.entity.StatusLogEntity
 import com.haki.fleettrackertest.core.domain.model.StatusLog
 import com.haki.fleettrackertest.core.domain.model.User
 import com.haki.fleettrackertest.core.domain.repository.IFleetRepository
@@ -21,6 +22,12 @@ class FleetRepository @Inject constructor(
     override fun getLastStatusLog(): Flow<StatusLog> {
         return localDataSource.getLastStatusLog().map { entity ->
             entity?.let { DataMapper.mapEntitytoDomain(it) } ?: StatusLog()
+        }
+    }
+
+    override fun getAllStatusLog(): Flow<List<StatusLog>> {
+        return localDataSource.getAllStatusLog().map {
+            DataMapper.mapEntitytoDomain(it)
         }
     }
 

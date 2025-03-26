@@ -17,6 +17,9 @@ class LocalDataSource @Inject constructor(
     fun getLastStatusLog(): Flow<StatusLogEntity?> {
         return dao.getLastStatusLog()
     }
+    fun getAllStatusLog(): Flow<List<StatusLogEntity>> {
+        return dao.getAllStatusLog()
+    }
     suspend fun saveUserSession(user: UserEntity) {
         userPreference.saveUserSession(user)
     }

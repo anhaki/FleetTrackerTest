@@ -9,6 +9,7 @@ import com.haki.fleettrackertest.core.data.source.local.room.FleetDatabase
 import com.haki.fleettrackertest.core.data.source.local.room.StatusLogDao
 
 import com.haki.fleettrackertest.core.domain.repository.IFleetRepository
+import com.haki.fleettrackertest.core.domain.usecase.GetAllStatusLogUseCase
 import com.haki.fleettrackertest.core.domain.usecase.GetFullRouteUseCase
 import com.haki.fleettrackertest.core.domain.usecase.GetLastStatusLogUseCase
 import com.haki.fleettrackertest.core.domain.usecase.GetUserSessionUseCase
@@ -71,14 +72,6 @@ object CoreModule {
 
     @Provides
     @Singleton
-    fun provideGetFullRoute(
-        repository: IFleetRepository
-    ): GetFullRouteUseCase {
-        return GetFullRouteUseCase(repository)
-    }
-
-    @Provides
-    @Singleton
     fun provideGetUserSession(
         repository: IFleetRepository
     ): GetUserSessionUseCase {
@@ -107,5 +100,22 @@ object CoreModule {
         repository: IFleetRepository
     ): GetLastStatusLogUseCase {
         return GetLastStatusLogUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetAllStatusLogUseCase(
+        repository: IFleetRepository
+    ): GetAllStatusLogUseCase {
+        return GetAllStatusLogUseCase(repository)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideGetFullRoute(
+        repository: IFleetRepository
+    ): GetFullRouteUseCase {
+        return GetFullRouteUseCase(repository)
     }
 }

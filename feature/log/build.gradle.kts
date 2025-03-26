@@ -1,7 +1,5 @@
-import java.util.Properties
-
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.kapt)
@@ -9,21 +7,14 @@ plugins {
 }
 
 android {
-    namespace = "com.haki.fleettrackertest"
-    compileSdk = 35
+    namespace = "com.haki.fleettrackertest.feature.log"
+    compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.haki.fleettrackertest"
         minSdk = 24
-        targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        val properties = Properties()
-        properties.load(project.rootProject.file("local.properties").inputStream())
-        buildConfigField("String", "MAPS_API_KEY", "\"${properties.getProperty("MAPS_API_KEY")}\"")
-        buildConfigField("String", "MAPS_API_BASE_URL", "\"${properties.getProperty("MAPS_API_BASE_URL")}\"")
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -44,21 +35,17 @@ android {
     }
     buildFeatures {
         compose = true
-        buildConfig = true
     }
 }
 
 dependencies {
     implementation(project(":core:domain"))
-    implementation(project(":core:data"))
+    implementation(project(":core:utils"))
     implementation(project(":core:navigation"))
+    implementation(project(":core:service"))
     implementation(project(":core:utils"))
 
-    implementation(project(":feature:maps"))
-    implementation(project(":feature:dashboard"))
     implementation(project(":feature:common"))
-    implementation(project(":feature:login"))
-    implementation(project(":feature:log"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -68,6 +55,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -79,14 +67,5 @@ dependencies {
     implementation (libs.androidx.hilt.navigation.compose)
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
-
-    implementation(libs.androidx.datastore.preferences)
-    implementation (libs.androidx.room.ktx)
-    kapt (libs.androidx.room.compiler)
-    implementation(libs.converter.gson)
-
-    implementation (libs.retrofit)
-    implementation (libs.retrofit.converter.gson)
-    implementation (libs.okhttp.logging.interceptor)
-    implementation (libs.serialization.json)
+    implementation (libs.kotlinx.datetime)
 }

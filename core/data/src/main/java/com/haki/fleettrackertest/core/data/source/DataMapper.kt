@@ -29,5 +29,15 @@ object DataMapper {
         doorClosed = data.doorClosed,
         date = data.date,
     )
+    fun mapEntitytoDomain(data: List<StatusLogEntity>) =
+        data.map {
+            StatusLog(
+                id = it.id,
+                speed = it.speed,
+                engineOn = it.engineOn,
+                doorClosed = it.doorClosed,
+                date = it.date,
+            )
+        }
 
 }

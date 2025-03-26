@@ -10,7 +10,8 @@ private val LightColorScheme = lightColorScheme(
     onPrimary = Color.White,
     background = Color.White,
     error = Negative,
-    tertiary = Positive
+    tertiary = Positive,
+    onError = NegativeBg
 )
 
 @Composable

@@ -23,6 +23,7 @@ import com.haki.fleettrackertest.core.navigation.Screen
 import com.haki.fleettrackertest.feature.common.BottomBar
 import com.haki.fleettrackertest.feature.common.TopBar
 import com.haki.fleettrackertest.feature.dashboard.DashboardScreen
+import com.haki.fleettrackertest.feature.log.LogScreen
 import com.haki.fleettrackertest.feature.login.LoginScreen
 import com.haki.fleettrackertest.feature.maps.MapsScreen
 import com.haki.fleettrackertest.ui.theme.FleetTrackerTestTheme
@@ -54,6 +55,11 @@ class MainActivity : ComponentActivity() {
                         route = Screen.Login.route,
                     ) {
                         LoginScreen(navController)
+                    }
+                    composable(
+                        route = Screen.Log.route,
+                    ) {
+                        LogScreen()
                     }
                 }
             }

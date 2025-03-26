@@ -11,12 +11,11 @@ import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.IBinder
-import android.os.Vibrator
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.haki.fleettrackertest.core.domain.model.StatusLog
 import com.haki.fleettrackertest.core.domain.usecase.InsertStatusLogUseCase
 import com.haki.fleettrackertest.core.utils.Constants
+import com.haki.fleettrackertest.core.utils.ServiceFlag
 import com.haki.fleettrackertest.core.utils.StatusActions
 import com.haki.fleettrackertest.core.utils.StatusActions.SUBSCRIBE
 import com.haki.fleettrackertest.core.utils.StatusActions.UNSUBSCRIBE
@@ -40,6 +39,16 @@ class FleetStatusSourceService : Service() {
     private var speed = 0
     private var engineOn = false
     private var doorClosed = false
+    private var lastAlertStatus = mutableMapOf(
+        "doorOpen" to false,
+        "highSpeed" to false,
+        "engineOn" to false
+    )
+
+    override fun onCreate() {
+        super.onCreate()
+        ServiceFlag.IS_SERVICE_RUNNING = true
+    }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -65,9 +74,19 @@ class FleetStatusSourceService : Service() {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         suspend fun updateStatusAndNotify() {
-            speed = Random.nextInt(0, 100)
-            engineOn = Random.nextBoolean()
-            doorClosed = Random.nextBoolean()
+            if (!engineOn || Random.nextInt(0, 4) == 0) {
+                engineOn = Random.nextBoolean()
+            }
+
+            if (Random.nextInt(0, 3) == 0) {
+                doorClosed = Random.nextBoolean()
+            }
+
+            speed = if (engineOn) {
+                Random.nextInt(0, 100)
+            } else {
+                0
+            }
 
             val statusLog = StatusLog(
                 id = 0,
@@ -78,43 +97,58 @@ class FleetStatusSourceService : Service() {
             )
             insertStatusLogUseCase(statusLog)
 
-            val notification = createNotification(speed, engineOn, doorClosed).apply {
+            val notification = createServiceStatusNotification(speed, engineOn, doorClosed).apply {
                 flags = FLAG_ONGOING_EVENT
             }
             notificationManager.notify(1, notification)
+
+            checkAndManageWarnings(notificationManager)
         }
 
         scope.launch {
             updateStatusAndNotify()
             if (Build.VERSION.SDK_INT < 34) {
-                startForeground(1, createNotification(speed, engineOn, doorClosed))
+                startForeground(1, createServiceStatusNotification(speed, engineOn, doorClosed))
             } else {
-                startForeground(1, createNotification(speed, engineOn, doorClosed),
+                startForeground(1, createServiceStatusNotification(speed, engineOn, doorClosed),
                     FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
             }
 
             while (isRunning) {
-                delay(3000)
+                delay(5000)
                 if (!isRunning) break
                 updateStatusAndNotify()
             }
         }
     }
 
-    private fun createNotification(speed: Int, engineOn: Boolean, doorClosed: Boolean): Notification {
+
+    private fun createServiceStatusNotification(speed: Int, engineOn: Boolean, doorClosed: Boolean): Notification {
         val unsubPendingIntent = createActionIntent(this, UNSUBSCRIBE)
         val engineStat = if(engineOn) "On" else "Off"
         val doorStat = if(doorClosed) "Closed" else "Opened"
 
         return NotificationCompat.Builder(this, Constants.CHANNEL_ID).apply {
-            setSmallIcon(R.drawable.ic_warning)
-            setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_warning))
+            setSmallIcon(R.drawable.ic_connected)
+            setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_connected))
             setContentTitle("Connected")
             setContentText("Spd: $speed, Eng: $engineStat, Door: $doorStat")
             setOngoing(true)
             setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            addAction(R.drawable.ic_warning, "Disconnect", unsubPendingIntent)
+            addAction(R.drawable.ic_connected, "Disconnect", unsubPendingIntent)
             setDeleteIntent(unsubPendingIntent)
+            setStyle(NotificationCompat.DecoratedCustomViewStyle())
+        }.build()
+    }
+
+    private fun createAlertNotification(message: String): Notification {
+        return NotificationCompat.Builder(this, Constants.ALERT_CHANNEL_ID).apply {
+            setSmallIcon(R.drawable.ic_warning)
+            setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_warning))
+            setContentTitle("⚠️ WARNING!")
+            setContentText(message)
+            setOngoing(true)
+            setPriority(NotificationCompat.PRIORITY_MAX)
             setStyle(NotificationCompat.DecoratedCustomViewStyle())
         }.build()
     }
@@ -135,4 +169,53 @@ class FleetStatusSourceService : Service() {
         )
     }
 
+    private fun checkAndManageWarnings(notificationManager: NotificationManager) {
+        val warningMessages = mutableMapOf<Int, String>()
+
+        val isDoorOpenWarning = speed > 0 && !doorClosed
+        val isHighSpeedWarning = speed > 80
+        val isEngineOnWarning = engineOn
+
+        if (lastAlertStatus["doorOpen"] != isDoorOpenWarning) {
+            lastAlertStatus["doorOpen"] = isDoorOpenWarning
+            if (isDoorOpenWarning) {
+                warningMessages[1001] = "⚠️ Warning: Door Open While Moving!"
+            } else {
+                notificationManager.cancel(1001)
+            }
+        }
+
+        if (lastAlertStatus["highSpeed"] != isHighSpeedWarning) {
+            lastAlertStatus["highSpeed"] = isHighSpeedWarning
+            if (isHighSpeedWarning) {
+                warningMessages[1002] = "⚠️ Caution: High Speed!"
+            } else {
+                notificationManager.cancel(1002)
+            }
+        }
+
+        if (lastAlertStatus["engineOn"] != isEngineOnWarning) {
+            lastAlertStatus["engineOn"] = isEngineOnWarning
+
+            val message = if (engineOn) "🔧 Engine Started" else "🛑 Engine Stopped"
+            val alertNotification = createAlertNotification(message)
+            notificationManager.notify(1003, alertNotification)
+
+            scope.launch {
+                delay(5000)
+                notificationManager.cancel(1003)
+            }
+        }
+
+        warningMessages.forEach { (id, message) ->
+            val alertNotification = createAlertNotification(message)
+            notificationManager.notify(id, alertNotification)
+        }
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ServiceFlag.IS_SERVICE_RUNNING = false
+    }
 }

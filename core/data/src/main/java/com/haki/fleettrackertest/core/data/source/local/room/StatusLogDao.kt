@@ -14,4 +14,7 @@ interface StatusLogDao {
 
     @Query("SELECT * FROM status_log ORDER BY date DESC")
     fun getLastStatusLog(): Flow<StatusLogEntity?>
+
+    @Query("SELECT * FROM status_log ORDER BY date DESC")
+    fun getAllStatusLog(): Flow<List<StatusLogEntity>>
 }
