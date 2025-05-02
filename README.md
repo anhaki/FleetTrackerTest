@@ -15,7 +15,7 @@ Fleet Tracker adalah aplikasi Android yang mensimulasikan sistem manajemen armad
 2. Buka proyek di Android Studio.
 3. Tambahkan API key Google Maps di `local.properties`:
    ```properties
-   MAPS_API_KEY=AIzaSyALzdQOtH50TNc_90iVDOtAGYpIRiY7qw4
+   MAPS_API_KEY=<API_KEYS>
    ```
 4. Jalankan aplikasi di emulator atau perangkat.
 
